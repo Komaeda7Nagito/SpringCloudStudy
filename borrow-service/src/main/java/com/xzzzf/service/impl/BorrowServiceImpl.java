@@ -6,6 +6,8 @@ import com.xzzzf.entity.BorrowDetails;
 import com.xzzzf.entity.User;
 import com.xzzzf.mapper.BorrowMapper;
 import com.xzzzf.service.BorrowService;
+import com.xzzzf.service.client.BookClient;
+import com.xzzzf.service.client.UserClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,17 +22,38 @@ public class BorrowServiceImpl implements BorrowService {
     @Resource
     private BorrowMapper borrowMapper;
 
-    private RestTemplate restTemplate = new RestTemplate();
+    @Resource
+    private RestTemplate restTemplate;
+
+    @Resource
+    private UserClient userClient;
+
+    @Resource
+    private BookClient bookClient;
 
 
+    // 通过restTemplate调用user-service和book-service
+    // @Override
+    // public BorrowDetails getUserBorrowDetails(Integer uid) {
+    //     List<Borrow> borrows = borrowMapper.getBorrowsByUid(uid);
+    //     User user = restTemplate.getForObject("http://user-service/user/" + uid, User.class);
+    //
+    //     List<Book> bookList = borrows
+    //             .stream()
+    //             .map(borrow -> restTemplate.getForObject("http://book-service/book/" + borrow.getBid(), Book.class))
+    //             .collect(Collectors.toList());
+    //     return new BorrowDetails(user, bookList);
+    // }
+
+    // 通过 Feign 调用 user-service 和 book-service
     @Override
     public BorrowDetails getUserBorrowDetails(Integer uid) {
         List<Borrow> borrows = borrowMapper.getBorrowsByUid(uid);
-        User user = restTemplate.getForObject("http://localhost:8301/user/" + uid, User.class);
+        User user = userClient.findUserById(uid);
 
         List<Book> bookList = borrows
                 .stream()
-                .map(borrow -> restTemplate.getForObject("http://localhost:8101/book/" + borrow.getBid(), Book.class))
+                .map(borrow -> bookClient.findBookById(borrow.getBid()))
                 .collect(Collectors.toList());
         return new BorrowDetails(user, bookList);
     }

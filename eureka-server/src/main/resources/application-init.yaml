@@ -1,0 +1,12 @@
+server:
+  port: 8888
+eureka:
+  # 开启之前修改客户端设置 （虽然是服务器）
+  client:
+    #  Eureka 客户端不会从 Eureka 服务器获取服务注册表信息。也就是说，客户端不会进行服务发现。
+    fetch-registry: false
+    # 客户端不会将自己注册到 Eureka 服务器。在某些特定场景，例如单元测试或者本地开发环境，你可能不希望将服务实例注册到 Eureka 服务器。
+    register-with-eureka: false
+    # 这个配置表示 Eureka 服务器的地址。客户端需要知道 Eureka 服务器的地址，以便与其进行通信。
+    service-url:
+      defaultZone: http://localhost:8888/eureka

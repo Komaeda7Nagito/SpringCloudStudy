@@ -16,6 +16,7 @@ public class UserController {
 
     @RequestMapping("/user/{uid}")
     public User findUserById(@PathVariable("uid") Integer uid) {
+        System.out.println("被调用——————————");
         return userService.getUserById(uid);
     }
 }
