@@ -15,3 +15,9 @@ spring:
           uri: lb://borrow-service # 匹配后提供服务的路由地址  lb代表负载均衡
           predicates: # 断言，路径相匹配的进行路由
             - Path=/borrow/** # 访问这个路径会进行路由
+        - id: book-service
+          uri: lb://book-service
+          predicates:
+            - Path=/book/**
+          filters:
+            - AddRequestHeader=Test, TestGateway
